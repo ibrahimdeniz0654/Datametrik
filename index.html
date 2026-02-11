@@ -115,10 +115,11 @@
             background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px;
             border-radius: 10px; margin-bottom: 30px; font-size: 0.9em; color: #856404;
         }
-        .closed-message {
+        .closed-message, .success-message {
             text-align: center; padding: 60px 20px;
         }
         .closed-message h1 { color: #667eea; margin-bottom: 20px; }
+        .success-message h1 { color: #28a745; margin-bottom: 20px; }
         @media (max-width: 600px) {
             .content { padding: 25px 20px; }
             .scale-item { min-width: 50px; }
@@ -130,33 +131,16 @@
     <div id="app"></div>
 
     <script>
-        // ⚠️ BURAYI KENDİ BİLGİLERİNİZLE DEĞİŞTİRİN
-        const SAYAC_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-        const FORM_ACTION = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjjNb0wAOWaOlH0JmyvJUURORBrv30X69qJZnGPhdJH6yMfOyIzK7Jhr2TkRXjDH7Ylg/exec';
+        
         const HEDEF_YANIT = 500;
         const BITIS_TARIHI = new Date('2026-03-01T23:59:59');
-        
-        // Entry ID'lerinizi buraya yazın
-        const ENTRY_IDS = {
-            yas: 'entry.1234567890',
-            sektor: 'entry.2345678901',
-            istihdam: 'entry.3456789012',
-            sorular: [
-                'entry.4567890123', 'entry.5678901234', 'entry.6789012345',
-                'entry.7890123456', 'entry.8901234567', 'entry.9012345678',
-                'entry.0123456789', 'entry.1234567891', 'entry.2345678902',
-                'entry.3456789013', 'entry.4567890124', 'entry.5678901235',
-                'entry.6789012346', 'entry.7890123457', 'entry.8901234568',
-                'entry.9012345679', 'entry.0123456780', 'entry.1234567892',
-                'entry.2345678903', 'entry.3456789014'
-            ]
-        };
 
         let mevcutYanit = 0;
 
         async function kontrolEt() {
             try {
-                const response = await fetch(SAYAC_URL);
+                const response = await fetch(APPS_SCRIPT_URL);
                 const data = await response.json();
                 mevcutYanit = data.count;
                 
@@ -167,7 +151,6 @@
                 }
             } catch (e) {
                 console.error('Kontrol hatası:', e);
-                // Hata durumunda formu göster (test için)
                 gosterForm(0);
             }
         }
@@ -177,7 +160,7 @@
                 <div class="container">
                     <div class="closed-message">
                         <h1>📊 Anket Süresi Sona Ermiştir</h1>
-                        <div class="progress-bar" style="margin: 20px auto; max-width: 400px;">
+                        <div class="progress-bar" style="margin: 20px auto; max-width: 400px; background: #e0e0e0;">
                             <div class="progress-fill" style="width: 100%; background: #667eea; color: white;">
                                 ${yanitSayisi}/${HEDEF_YANIT}
                             </div>
@@ -213,17 +196,17 @@
                             <strong>🔒 Gizlilik Bildirimi:</strong> Bu anket profesyonel yaşamdaki stres faktörlerini ve genel sağlık üzerindeki etkilerini anlamayı amaçlamaktadır. Yanıtlarınız tamamen anonim kalacaktır.
                         </div>
 
-                        <form id="surveyForm" action="${FORM_ACTION}" method="POST" target="_self" onsubmit="return validateForm()">
+                        <form id="surveyForm" onsubmit="return handleSubmit(event)">
                             <!-- BÖLÜM 0 -->
                             <div class="section">
                                 <div class="section-title">Bölüm 0: Demografik Bilgiler</div>
                                 
                                 <div class="form-group">
-                                    <label>Yaşınız</label>
+                                    <label>Yaşınız *</label>
                                     <div class="radio-group">
                                         ${['18-25','26-35','36-45','46-55','55+'].map(val => `
                                             <div class="radio-option">
-                                                <input type="radio" name="${ENTRY_IDS.yas}" value="${val}" id="yas${val}" required>
+                                                <input type="radio" name="yas" value="${val}" id="yas${val}" required>
                                                 <label for="yas${val}">${val}</label>
                                             </div>
                                         `).join('')}
@@ -231,16 +214,16 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Sektör/Endüstri</label>
-                                    <input type="text" name="${ENTRY_IDS.sektor}" placeholder="Örn: Teknoloji, Sağlık..." required>
+                                    <label>Sektör/Endüstri *</label>
+                                    <input type="text" name="sektor" placeholder="Örn: Teknoloji, Sağlık..." required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>İstihdam Durumu</label>
+                                    <label>İstihdam Durumu *</label>
                                     <div class="radio-group">
                                         ${['Tam Zamanlı','Yarı Zamanlı','Serbest/Freelance','İşsiz (Arıyor)'].map(val => `
                                             <div class="radio-option">
-                                                <input type="radio" name="${ENTRY_IDS.istihdam}" value="${val}" id="ist${val.replace(/[^a-zA-Z]/g,'')}" required>
+                                                <input type="radio" name="istihdam" value="${val}" id="ist${val.replace(/[^a-zA-Z]/g,'')}" required>
                                                 <label for="ist${val.replace(/[^a-zA-Z]/g,'')}">${val}</label>
                                             </div>
                                         `).join('')}
@@ -303,7 +286,6 @@
             kategoriler.forEach(kat => {
                 html += `<div class="category-header">${kat.baslik}</div>`;
                 kat.sorular.forEach((soru) => {
-                    const entryId = ENTRY_IDS.sorular[soruIndex];
                     html += `
                         <div class="question-block">
                             <div class="question-text">
@@ -313,7 +295,7 @@
                             <div class="scale">
                                 ${[1,2,3,4,5].map(val => `
                                     <div class="scale-item">
-                                        <input type="radio" name="${entryId}" id="s${soruIndex}_${val}" value="${val}" required>
+                                        <input type="radio" name="soru${soruIndex}" value="${val}" id="s${soruIndex}_${val}" required>
                                         <label for="s${soruIndex}_${val}">${val}</label>
                                     </div>
                                 `).join('')}
@@ -327,10 +309,63 @@
             return html;
         }
 
-        function validateForm() {
-            document.getElementById('submitBtn').disabled = true;
-            document.getElementById('submitBtn').textContent = 'Gönderiliyor...';
-            return true;
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Gönderiliyor...';
+
+            const formData = new FormData(e.target);
+            const data = {
+                yas: formData.get('yas'),
+                sektor: formData.get('sektor'),
+                istihdam: formData.get('istihdam'),
+                sorular: []
+            };
+
+            for (let i = 0; i < 20; i++) {
+                data.sorular.push(formData.get(`soru${i}`));
+            }
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    gosterBasariMesaji();
+                } else {
+                    alert('Bir hata oluştu: ' + result.error);
+                    btn.disabled = false;
+                    btn.textContent = 'Anketi Gönder';
+                }
+            } catch (error) {
+                console.error('Gönderim hatası:', error);
+                alert('Bağlantı hatası. Lütfen tekrar deneyin.');
+                btn.disabled = false;
+                btn.textContent = 'Anketi Gönder';
+            }
+            
+            return false;
+        }
+
+        function gosterBasariMesaji() {
+            document.getElementById('app').innerHTML = `
+                <div class="container">
+                    <div class="success-message">
+                        <h1>✅ Teşekkür Ederiz!</h1>
+                        <p style="font-size: 1.2em; margin-bottom: 20px;">Yanıtınız başarıyla kaydedildi.</p>
+                        <p style="color: #666;">Katkınız için teşekkür ederiz.</p>
+                        <p style="margin-top: 30px; color: #999; font-size: 0.9em;">
+                            İş Yaşamında Stres ve Güvencesizlik Araştırması Ekibi
+                        </p>
+                    </div>
+                </div>
+            `;
         }
 
         window.onload = kontrolEt;
