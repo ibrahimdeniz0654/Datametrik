@@ -11,10 +11,9 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -27,161 +26,59 @@
             padding: 40px 30px;
             text-align: center;
         }
-        .header h1 { font-size: 1.8em; margin-bottom: 15px; }
-        .progress-bar {
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            height: 20px;
-            margin-top: 20px;
-            overflow: hidden;
+        .header h1 { 
+            font-size: 1.8em; 
+            margin-bottom: 15px; 
         }
-        .progress-fill {
-            background: white;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #667eea;
-            font-size: 0.8em;
-            font-weight: 600;
-            transition: width 0.5s;
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
         }
-        .content { padding: 40px 30px; }
-        .section { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #f0f0f0; }
-        .section:last-child { border-bottom: none; }
-        .section-title {
-            color: #667eea; font-size: 1.3em; font-weight: 600;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        .content {
+            padding: 0;
         }
-        .section-title::before {
-            content: ''; width: 4px; height: 24px;
-            background: #667eea; border-radius: 2px;
+        .form-iframe {
+            width: 100%;
+            height: 2000px;
+            border: none;
         }
-        .form-group { margin-bottom: 25px; }
-        label { display: block; font-weight: 600; margin-bottom: 10px; color: #444; }
-        .radio-group { display: flex; flex-wrap: wrap; gap: 15px; }
-        .radio-option { position: relative; }
-        .radio-option input[type="radio"] { position: absolute; opacity: 0; }
-        .radio-option label {
-            display: inline-block; padding: 10px 20px; background: #f8f9fa;
-            border: 2px solid #e0e0e0; border-radius: 25px; cursor: pointer;
-            transition: all 0.3s; font-weight: 500; margin: 0;
-        }
-        .radio-option input[type="radio"]:checked + label {
-            background: #667eea; color: white; border-color: #667eea;
-            transform: translateY(-2px);
-        }
-        input[type="text"] {
-            width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0;
-            border-radius: 10px; font-size: 1em;
-        }
-        input[type="text"]:focus { outline: none; border-color: #667eea; }
-        .question-block {
-            background: #f8f9fa; padding: 20px; border-radius: 12px;
-            margin-bottom: 20px; border-left: 4px solid #667eea;
-        }
-        .question-number {
-            display: inline-block; background: #667eea; color: white;
-            width: 28px; height: 28px; border-radius: 50%;
-            text-align: center; line-height: 28px; font-weight: 600;
-            font-size: 0.9em; margin-right: 10px;
-        }
-        .question-text { font-weight: 500; color: #444; line-height: 1.5; margin-bottom: 15px; }
-        .scale { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-        .scale-item { flex: 1; min-width: 60px; text-align: center; }
-        .scale-item input[type="radio"] { display: none; }
-        .scale-item label {
-            display: block; padding: 15px 10px; background: white;
-            border: 2px solid #ddd; border-radius: 10px; cursor: pointer;
-            transition: all 0.3s; font-weight: 600; color: #666; margin: 0;
-        }
-        .scale-item input[type="radio"]:checked + label {
-            background: #667eea; color: white; border-color: #667eea;
-            transform: scale(1.05);
-        }
-        .category-header {
-            background: #e3e8ff; padding: 15px 20px; border-radius: 10px;
-            margin: 30px 0 20px 0; font-weight: 600; color: #667eea;
-        }
-        .submit-btn {
-            width: 100%; padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; border: none; border-radius: 12px; font-size: 1.1em;
-            font-weight: 600; cursor: pointer; transition: all 0.3s;
-        }
-        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .privacy-notice {
-            background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px;
-            border-radius: 10px; margin-bottom: 30px; font-size: 0.9em; color: #856404;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            color: #856404;
         }
-        .closed-message, .success-message {
-            text-align: center; padding: 60px 20px;
-        }
-        .closed-message h1 { color: #667eea; margin-bottom: 20px; }
-        .success-message h1 { color: #28a745; margin-bottom: 20px; }
         @media (max-width: 600px) {
-            .content { padding: 25px 20px; }
-            .scale-item { min-width: 50px; }
-            .scale-item label { padding: 12px 8px; font-size: 0.9em; }
+            .form-iframe {
+                height: 2200px;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="app"></div>
-
-    <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrYteoVM8y5t6DJska55Itb9IW6Ww9z4vHnrHN0cxD9boy7PsYLMDMlYleSRZY_6EPpw/exec';
+    <div class="container">
+        <div class="header">
+            <h1>İş Yaşamında Stres ve Güvencesizlik Araştırması</h1>
+            <p>Ocak 2026</p>
+        </div>
         
-        const HEDEF_YANIT = 500;
-        const BITIS_TARIHI = new Date('2026-03-01T23:59:59');
-
-        let mevcutYanit = 0;
-
-        async function kontrolEt() {
-            try {
-                const response = await fetch(APPS_SCRIPT_URL);
-                const data = await response.json();
-                mevcutYanit = data.count;
-                
-                if (!data.active || new Date() > BITIS_TARIHI || data.count >= HEDEF_YANIT) {
-                    gosterKapanisMesaji(data.count);
-                } else {
-                    gosterForm(data.count);
-                }
-            } catch (e) {
-                console.error('Kontrol hatası:', e);
-                gosterForm(0);
-            }
-        }
-
-        function gosterKapanisMesaji(yanitSayisi) {
-            document.getElementById('app').innerHTML = `
-                <div class="container">
-                    <div class="closed-message">
-                        <h1>📊 Anket Süresi Sona Ermiştir</h1>
-                        <div class="progress-bar" style="margin: 20px auto; max-width: 400px; background: #e0e0e0;">
-                            <div class="progress-fill" style="width: 100%; background: #667eea; color: white;">
-                                ${yanitSayisi}/${HEDEF_YANIT}
-                            </div>
-                        </div>
-                        <p><strong>Değerli katılımcılarımız,</strong></p>
-                        <p>Anketimiz <strong>${yanitSayisi} yanıta</strong> ulaşarak hedefini tamamlamıştır.</p>
-                        <p>Katkılarınız için içtenlikle teşekkür ederiz.</p>
-                        <p style="margin-top: 30px; color: #666; font-size: 0.9em;">
-                            İş Yaşamında Stres ve Güvencesizlik Araştırması Ekibi<br>
-                            ${new Date().getFullYear()}
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function gosterForm(yanitSayisi) {
-            const yuzde = Math.min((yanitSayisi / HEDEF_YANIT) * 100, 100);
-            
-            document.getElementById('app').innerHTML = `
-                <div class="container">
-                    <div class="header">
-                        <h1>İş Yaşamında Stres ve Güvencesizlik Araştırması</h1>
-                        <div
+        <div class="privacy-notice">
+            <strong>🔒 Gizlilik Bildirimi:</strong> Bu anket profesyonel yaşamdaki stres faktörlerini ve genel sağlık üzerindeki etkilerini anlamayı amaçlamaktadır. Yanıtlarınız tamamen anonim kalacak ve yalnızca bilimsel araştırma amacıyla kullanılacaktır.
+        </div>
+        
+        <div class="content">
+            <!-- BURAYA GOOGLE FORM LINKİNİZİ YAPIŞTIRIN -->
+            <iframe 
+                src="https://forms.gle/eXSCJ68g8GzL4VMj7" 
+                class="form-iframe"
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                Yükleniyor…
+            </iframe>
+        </div>
+    </div>
+</body>
+</html>
