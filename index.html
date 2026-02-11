@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İş Yaşamında Stres ve Güvencesizlik Araştırması</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.8em; margin-bottom: 15px; }
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            height: 20px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: white;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: width 0.5s;
+        }
+        .content { padding: 40px 30px; }
+        .section { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #f0f0f0; }
+        .section:last-child { border-bottom: none; }
+        .section-title {
+            color: #667eea; font-size: 1.3em; font-weight: 600;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before {
+            content: ''; width: 4px; height: 24px;
+            background: #667eea; border-radius: 2px;
+        }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; color: #444; }
+        .radio-group { display: flex; flex-wrap: wrap; gap: 15px; }
+        .radio-option { position: relative; }
+        .radio-option input[type="radio"] { position: absolute; opacity: 0; }
+        .radio-option label {
+            display: inline-block; padding: 10px 20px; background: #f8f9fa;
+            border: 2px solid #e0e0e0; border-radius: 25px; cursor: pointer;
+            transition: all 0.3s; font-weight: 500; margin: 0;
+        }
+        .radio-option input[type="radio"]:checked + label {
+            background: #667eea; color: white; border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        input[type="text"] {
+            width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 1em;
+        }
+        input[type="text"]:focus { outline: none; border-color: #667eea; }
+        .question-block {
+            background: #f8f9fa; padding: 20px; border-radius: 12px;
+            margin-bottom: 20px; border-left: 4px solid #667eea;
+        }
+        .question-number {
+            display: inline-block; background: #667eea; color: white;
+            width: 28px; height: 28px; border-radius: 50%;
+            text-align: center; line-height: 28px; font-weight: 600;
+            font-size: 0.9em; margin-right: 10px;
+        }
+        .question-text { font-weight: 500; color: #444; line-height: 1.5; margin-bottom: 15px; }
+        .scale { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .scale-item { flex: 1; min-width: 60px; text-align: center; }
+        .scale-item input[type="radio"] { display: none; }
+        .scale-item label {
+            display: block; padding: 15px 10px; background: white;
+            border: 2px solid #ddd; border-radius: 10px; cursor: pointer;
+            transition: all 0.3s; font-weight: 600; color: #666; margin: 0;
+        }
+        .scale-item input[type="radio"]:checked + label {
+            background: #667eea; color: white; border-color: #667eea;
+            transform: scale(1.05);
+        }
+        .category-header {
+            background: #e3e8ff; padding: 15px 20px; border-radius: 10px;
+            margin: 30px 0 20px 0; font-weight: 600; color: #667eea;
+        }
+        .submit-btn {
+            width: 100%; padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 12px; font-size: 1.1em;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+        }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .privacy-notice {
+            background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px;
+            border-radius: 10px; margin-bottom: 30px; font-size: 0.9em; color: #856404;
+        }
+        .closed-message {
+            text-align: center; padding: 60px 20px;
+        }
+        .closed-message h1 { color: #667eea; margin-bottom: 20px; }
+        @media (max-width: 600px) {
+            .content { padding: 25px 20px; }
+            .scale-item { min-width: 50px; }
+            .scale-item label { padding: 12px 8px; font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // ⚠️ BURAYI KENDİ BİLGİLERİNİZLE DEĞİŞTİRİN
+        const SAYAC_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        const FORM_ACTION = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+        const HEDEF_YANIT = 500;
+        const BITIS_TARIHI = new Date('2026-03-01T23:59:59');
+        
+        // Entry ID'lerinizi buraya yazın
+        const ENTRY_IDS = {
+            yas: 'entry.1234567890',
+            sektor: 'entry.2345678901',
+            istihdam: 'entry.3456789012',
+            sorular: [
+                'entry.4567890123', 'entry.5678901234', 'entry.6789012345',
+                'entry.7890123456', 'entry.8901234567', 'entry.9012345678',
+                'entry.0123456789', 'entry.1234567891', 'entry.2345678902',
+                'entry.3456789013', 'entry.4567890124', 'entry.5678901235',
+                'entry.6789012346', 'entry.7890123457', 'entry.8901234568',
+                'entry.9012345679', 'entry.0123456780', 'entry.1234567892',
+                'entry.2345678903', 'entry.3456789014'
+            ]
+        };
+
+        let mevcutYanit = 0;
+
+        async function kontrolEt() {
+            try {
+                const response = await fetch(SAYAC_URL);
+                const data = await response.json();
+                mevcutYanit = data.count;
+                
+                if (!data.active || new Date() > BITIS_TARIHI || data.count >= HEDEF_YANIT) {
+                    gosterKapanisMesaji(data.count);
+                } else {
+                    gosterForm(data.count);
+                }
+            } catch (e) {
+                console.error('Kontrol hatası:', e);
+                // Hata durumunda formu göster (test için)
+                gosterForm(0);
+            }
+        }
+
+        function gosterKapanisMesaji(yanitSayisi) {
+            document.getElementById('app').innerHTML = `
+                <div class="container">
+                    <div class="closed-message">
+                        <h1>📊 Anket Süresi Sona Ermiştir</h1>
+                        <div class="progress-bar" style="margin: 20px auto; max-width: 400px;">
+                            <div class="progress-fill" style="width: 100%; background: #667eea; color: white;">
+                                ${yanitSayisi}/${HEDEF_YANIT}
+                            </div>
+                        </div>
+                        <p><strong>Değerli katılımcılarımız,</strong></p>
+                        <p>Anketimiz <strong>${yanitSayisi} yanıta</strong> ulaşarak hedefini tamamlamıştır.</p>
+                        <p>Katkılarınız için içtenlikle teşekkür ederiz.</p>
+                        <p style="margin-top: 30px; color: #666; font-size: 0.9em;">
+                            İş Yaşamında Stres ve Güvencesizlik Araştırması Ekibi<br>
+                            ${new Date().getFullYear()}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function gosterForm(yanitSayisi) {
+            const yuzde = Math.min((yanitSayisi / HEDEF_YANIT) * 100, 100);
+            
+            document.getElementById('app').innerHTML = `
+                <div class="container">
+                    <div class="header">
+                        <h1>İş Yaşamında Stres ve Güvencesizlik Araştırması</h1>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${yuzde}%">
+                                ${yanitSayisi}/${HEDEF_YANIT} Yanıt
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        <div class="privacy-notice">
+                            <strong>🔒 Gizlilik Bildirimi:</strong> Bu anket profesyonel yaşamdaki stres faktörlerini ve genel sağlık üzerindeki etkilerini anlamayı amaçlamaktadır. Yanıtlarınız tamamen anonim kalacaktır.
+                        </div>
+
+                        <form id="surveyForm" action="${FORM_ACTION}" method="POST" target="_self" onsubmit="return validateForm()">
+                            <!-- BÖLÜM 0 -->
+                            <div class="section">
+                                <div class="section-title">Bölüm 0: Demografik Bilgiler</div>
+                                
+                                <div class="form-group">
+                                    <label>Yaşınız</label>
+                                    <div class="radio-group">
+                                        ${['18-25','26-35','36-45','46-55','55+'].map(val => `
+                                            <div class="radio-option">
+                                                <input type="radio" name="${ENTRY_IDS.yas}" value="${val}" id="yas${val}" required>
+                                                <label for="yas${val}">${val}</label>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Sektör/Endüstri</label>
+                                    <input type="text" name="${ENTRY_IDS.sektor}" placeholder="Örn: Teknoloji, Sağlık..." required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>İstihdam Durumu</label>
+                                    <div class="radio-group">
+                                        ${['Tam Zamanlı','Yarı Zamanlı','Serbest/Freelance','İşsiz (Arıyor)'].map(val => `
+                                            <div class="radio-option">
+                                                <input type="radio" name="${ENTRY_IDS.istihdam}" value="${val}" id="ist${val.replace(/[^a-zA-Z]/g,'')}" required>
+                                                <label for="ist${val.replace(/[^a-zA-Z]/g,'')}">${val}</label>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BÖLÜM 1 -->
+                            <div class="section">
+                                <div class="section-title">Bölüm 1: Değerlendirme</div>
+                                <p style="margin-bottom: 25px; color: #666;">
+                                    <strong>1: Kesinlikle Katılmıyorum → 5: Kesinlikle Katılıyorum</strong>
+                                </p>
+
+                                ${getSorularHTML()}
+                            </div>
+
+                            <button type="submit" class="submit-btn" id="submitBtn">Anketi Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getSorularHTML() {
+            const kategoriler = [
+                { baslik: 'I. İş Stresi ve İş Yükü (Kronik Gerilim)', sorular: [
+                    'Günlük iş yükümün standart çalışma saatleri içinde tamamlayabileceğim kapasitemi aştığını sık sık hissediyorum.',
+                    'Kişisel zamanımda işle ilgili düşünceleri "kapatmakta" zorlanıyorum.',
+                    'İşimin hızı veya yöntemleri üzerinde çok az veya hiç kontrolüm yok (Düşük Özerklik).',
+                    'Çalışma ortamım sürekli değerlendirme içeriyor, "mükemmel" olmak zorunda hissediyorum.',
+                    'Haftada en az üç kez stresin fiziksel belirtilerini (baş ağrısı, yorgunluk vb.) yaşıyorum.'
+                ]},
+                { baslik: 'II. İş Güvencesizliği ve Beklenti Kaygısı', sorular: [
+                    'Önümüzdeki 12 ay içinde işimi kaybetme olasılığı konusunda sık sık endişeleniyorum.',
+                    'Teknolojideki veya şirket yapısındaki değişiklikler rolümün eskimeye başladığını hissettiriyor.',
+                    'Yerine geçilebilir görünmekten korktuğum için rapor almaktan veya tatilden kaçınıyorum.',
+                    'Kariyer geleceğimi düşündüğümde heyecan yerine korku veya belirsizlik hissediyorum.',
+                    'Mevcut istihdamım sona ererse mali istikrarımla ilgili "en kötü senaryoları" sık sık hayal ediyorum.'
+                ]},
+                { baslik: 'III. Psikolojik Düzensizlik ve Panik Belirtileri', sorular: [
+                    'Son 6 ay içinde işle ilgili ani yoğun korku veya çarpıntı nöbetleri yaşadım.',
+                    'İşyerimde sürekli tetikte olma ("aşırı uyanıklık") hissi yaşıyorum.',
+                    'İşle ilgili görevler veya çatışmalar üzerine düşünme nedeniyle uyku kalitem önemli ölçüde düştü.',
+                    'İşim veya işsizlik konusunu düşünürken kontrolü kaybetme (panik benzeri belirtiler) hissi yaşadım.',
+                    'İşte başlayan kaygımın şimdi hayatımın diğer alanlarını (hobiler, sosyal yaşam) etkilediğini görüyorum.'
+                ]},
+                { baslik: 'IV. Kimlik, Öz Değer ve Sosyal Aidiyet', sorular: [
+                    'Profesyonel başarının benim bir insan olarak değerimin temel ölçütü olduğuna inanıyorum.',
+                    'İşsiz kalma düşüncesi utanç veya potansiyel sosyal izolasyon hissi uyandırıyor.',
+                    'Mevcut profesyonel durumumun arkadaşlarımın ve ailemin beni algılama şeklini olumsuz etkilediğini hissediyorum.',
+                    'Profesyonel koşullarımı değiştirme yeteneğim konusunda çaresizlik hissi yaşıyorum.',
+                    'İşyerimde çalışanların stresle başa çıkmasına yardımcı olacak gerekli psikolojik destek sistemlerinin olmadığını düşünüyorum.'
+                ]}
+            ];
+
+            let html = '';
+            let soruIndex = 0;
+
+            kategoriler.forEach(kat => {
+                html += `<div class="category-header">${kat.baslik}</div>`;
+                kat.sorular.forEach((soru) => {
+                    const entryId = ENTRY_IDS.sorular[soruIndex];
+                    html += `
+                        <div class="question-block">
+                            <div class="question-text">
+                                <span class="question-number">${soruIndex + 1}</span>
+                                ${soru}
+                            </div>
+                            <div class="scale">
+                                ${[1,2,3,4,5].map(val => `
+                                    <div class="scale-item">
+                                        <input type="radio" name="${entryId}" id="s${soruIndex}_${val}" value="${val}" required>
+                                        <label for="s${soruIndex}_${val}">${val}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    soruIndex++;
+                });
+            });
+
+            return html;
+        }
+
+        function validateForm() {
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = 'Gönderiliyor...';
+            return true;
+        }
+
+        window.onload = kontrolEt;
+    </script>
+</body>
+</html>
